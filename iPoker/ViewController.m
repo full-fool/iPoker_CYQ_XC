@@ -32,6 +32,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UITextField appearance] setTintColor:[UIColor blueColor]];
     // Do any additional setup after loading the view.
     UIImage*img =[UIImage imageNamed:@"background.jpg"];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:img]];
