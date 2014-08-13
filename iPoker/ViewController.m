@@ -75,6 +75,14 @@
     [self switchToPokerViewWithGame:game];
 }
 
+- (BOOL) textFieldShouldReturn:(UITextField *)theTextField
+{
+    if(theTextField == self.IPTextField || self.nickNameTextField){
+        [theTextField resignFirstResponder];
+    }
+    return YES;
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
