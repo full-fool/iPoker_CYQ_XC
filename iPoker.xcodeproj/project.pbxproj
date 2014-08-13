@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18EFC57E199BC3720037DB2E /* PokerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFC57D199BC3720037DB2E /* PokerViewController.m */; };
 		2D6703F1199BAE7600E1FEE3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6703F0199BAE7600E1FEE3 /* Foundation.framework */; };
 		2D6703F3199BAE7600E1FEE3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6703F2199BAE7600E1FEE3 /* CoreGraphics.framework */; };
 		2D6703F5199BAE7600E1FEE3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6703F4199BAE7600E1FEE3 /* UIKit.framework */; };
@@ -43,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18EFC57C199BC3720037DB2E /* PokerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PokerViewController.h; sourceTree = "<group>"; };
+		18EFC57D199BC3720037DB2E /* PokerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PokerViewController.m; sourceTree = "<group>"; };
 		2D6703ED199BAE7600E1FEE3 /* iPoker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPoker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6703F0199BAE7600E1FEE3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2D6703F2199BAE7600E1FEE3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -146,6 +149,8 @@
 				2D670402199BAE7600E1FEE3 /* Main.storyboard */,
 				2D670405199BAE7600E1FEE3 /* ViewController.h */,
 				2D670406199BAE7600E1FEE3 /* ViewController.m */,
+				18EFC57C199BC3720037DB2E /* PokerViewController.h */,
+				18EFC57D199BC3720037DB2E /* PokerViewController.m */,
 				2D670408199BAE7600E1FEE3 /* Images.xcassets */,
 				2D6703F7199BAE7600E1FEE3 /* Supporting Files */,
 			);
@@ -331,6 +336,7 @@
 				2D670401199BAE7600E1FEE3 /* AppDelegate.m in Sources */,
 				2D6703FD199BAE7600E1FEE3 /* main.m in Sources */,
 				2D670440199BB02E00E1FEE3 /* PokerDeck.m in Sources */,
+				18EFC57E199BC3720037DB2E /* PokerViewController.m in Sources */,
 				2D67042A199BAFCD00E1FEE3 /* AsyncSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -536,6 +542,7 @@
 				2D670421199BAE7600E1FEE3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2D670422199BAE7600E1FEE3 /* Build configuration list for PBXNativeTarget "iPokerTests" */ = {
 			isa = XCConfigurationList;
@@ -544,6 +551,7 @@
 				2D670424199BAE7600E1FEE3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
