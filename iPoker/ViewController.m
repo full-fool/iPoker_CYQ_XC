@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "PokerViewController.h"
 #import "PokerGame.h"
+#import "AppDelegate.h"
 
 @interface ViewController ()
 
@@ -64,6 +65,10 @@
 {
     NSLog(@"%@", self.nickNameTextField.text);
     NSLog(@"%@", self.IPTextField.text);
+    AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
+    appDelegate.nickName = self.nickNameTextField.text;
+    appDelegate.IPAddress = self.IPTextField.text;
+    
     PokerGame *game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
     [self switchToPokerViewWithGame:game];
 }

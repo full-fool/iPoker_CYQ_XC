@@ -8,6 +8,7 @@
 #import "PokerViewController.h"
 #import "PokerGame.h"
 #import "NSDictionary+JSONCategories.h"
+#import "AppDelegate.h"
 //#import "EmitterView.h"
 
 @interface PokerViewController ()
@@ -289,6 +290,9 @@
     if(!gamestart){
         [self gameinitialize];
         [self.game begin];
+        
+        AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
+        NSLog(@"In PokerViewController, nickName is %@ and ip address is %@", appDelegate.nickName, appDelegate.IPAddress);
         
         //[UIView animateWithDuration:5 animations:^{
         //[_startButton setTitle:@"" forState:normal];

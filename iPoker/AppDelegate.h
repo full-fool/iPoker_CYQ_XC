@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>{
+    NSString *nickName;
+    NSString *IPAddress;
+}
 
 @property (strong, nonatomic) UIWindow *window;
-
+@property (nonatomic, retain) NSString  *nickName;
+@property (nonatomic, retain) NSString  *IPAddress;
 @end

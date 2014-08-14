@@ -9,7 +9,8 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
-
+@synthesize nickName;
+@synthesize IPAddress;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -46,4 +47,6 @@
 {
     return UIInterfaceOrientationMaskPortrait;
 }  //Prohibit horizontal screen
+
+
 @end
