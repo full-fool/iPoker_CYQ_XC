@@ -11,6 +11,7 @@
 @implementation AppDelegate
 @synthesize nickName;
 @synthesize IPAddress;
+@synthesize isServer;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.

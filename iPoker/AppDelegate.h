@@ -11,9 +11,11 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>{
     NSString *nickName;
     NSString *IPAddress;
+    BOOL isServer;
 }
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) NSString  *nickName;
 @property (nonatomic, retain) NSString  *IPAddress;
+@property (nonatomic) BOOL isServer;
 @end

@@ -24,10 +24,8 @@
     NSMutableArray *TotalOutCards;
     NSMutableArray *viewCreated;
     UIPanGestureRecognizer *panGesture;
-    //UITapGestureRecognizer *tapGesture;
-    //UISwipeGestureRecognizer *swipeGesture;
 }
-//UIView *emitterView;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -35,9 +33,21 @@
     //    self.game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
     UIImage *img =[UIImage imageNamed:@"background.jpg"];   //set the background image;
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:img]];
+    
+    AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
+
+    if(appDelegate.isServer)
+        self.game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
+    else
+    {
+        self.game = [[PokerGame alloc] initAsServer:NO toHost:appDelegate.IPAddress];
+        self.startButton.enabled = FALSE;
+
+    }
     gamestart = false;
 }
 
+//initializer of the UI, nothing to do with the model.
 -(void)gameinitialize{
     self.startview.alpha = 0.0;  //hide the startview before the game;
     self.startview.image = [UIImage imageNamed:@"gamestart.png"];
@@ -73,6 +83,7 @@
     //tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     //[tapGesture setNumberOfTapsRequired:1];
 }
+
 - (void)panDetected:(UIPanGestureRecognizer*)gestureRecognizer{
     switch ([gestureRecognizer state]) {
         case UIGestureRecognizerStateBegan:
@@ -88,28 +99,32 @@
             break;
     }
 }
+
 - (void)tapupDetected:(UITapGestureRecognizer*)gestureRecognizer{
+    NSLog(@"tap up detected!!");
     [gestureRecognizer.view setCenter:CGPointMake(gestureRecognizer.view.center.x,gestureRecognizer.view.center.y - 18)];  //move up the view;
     [gestureRecognizer.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapdownDetected:)]];   //register tap-down pangesture;
     [SelectedHandCards addObject:gestureRecognizer.view];   //add into selectedhandcards;
     [gestureRecognizer.view removeGestureRecognizer:gestureRecognizer];  //remove tap-up pangesture;
 }
-- (void)tapdownDetected:(UITapGestureRecognizer*)gestureRecognizer{  //similar to tapupDetected()
+
+//similar to tapupDetected()
+- (void)tapdownDetected:(UITapGestureRecognizer*)gestureRecognizer{
+    NSLog(@"tap down detected!!");
     [gestureRecognizer.view setCenter:CGPointMake(gestureRecognizer.view.center.x,gestureRecognizer.view.center.y + 18)];
     [gestureRecognizer.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapupDetected:)]];
     [SelectedHandCards removeObject:gestureRecognizer.view];
     [gestureRecognizer.view removeGestureRecognizer:gestureRecognizer];
 }
+
 - (void)swipeupDetected:(UISwipeGestureRecognizer*)gestureRecognizer{
-    //[SelectedHandCards sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-    //    if(((UIView *)obj1).frame.origin.x < ((UIView *)obj2).frame.origin.x)
-    //        return NSOrderedAscending;
-    //    else return NSOrderedDescending;
-    // }];
-    if(gestureRecognizer.direction == UISwipeGestureRecognizerDirectionUp || gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight){   //only when swipe direction is up or right then go on;
+    NSLog(@"swipe up detected!!");
+    if(gestureRecognizer.direction == UISwipeGestureRecognizerDirectionUp || gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight){
+        //only when swipe direction is up or right then go on;
         NSUInteger selectedNum = SelectedHandCards.count;
         [UIView animateWithDuration:0.5 animations:^{
-            if([LastOutCards count] != 0)  //move last-out cards to total-out cards;
+            if([LastOutCards count] != 0)
+                //move last-out cards to total-out cards;
             {
                 for(int i = 0;i < LastOutCards.count; ++ i)
                     [TotalOutCards addObject:[LastOutCards objectAtIndex:i]];
@@ -175,7 +190,10 @@
         [SelectedHandCards removeAllObjects];
     }
 }
-- (void)swipedownDetected:(UISwipeGestureRecognizer*)gestureRecognizer{  //similar to swipeupDetected();
+
+//similar to swipeupDetected();
+- (void)swipedownDetected:(UISwipeGestureRecognizer*)gestureRecognizer{
+    NSLog(@"swipe down detected!!");
     if(gestureRecognizer.direction == UISwipeGestureRecognizerDirectionDown || gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight){
         [UIView animateWithDuration:0.5 animations:^{
             if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (HandCardNum - 1 + LastOutCards.count) > [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x)
@@ -225,13 +243,21 @@
     }
     
 }
-- (void)panBegan:(UIPanGestureRecognizer*)gestureRecognizer{}
+
+//called when the card starts moving
+- (void)panBegan:(UIPanGestureRecognizer*)gestureRecognizer{
+
+}
+
+//called when the card is moving
 - (void)panMoved:(UIPanGestureRecognizer*)recognizer{
     CGPoint translation = [recognizer translationInView:self.view];
     recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,
                                          recognizer.view.center.y + translation.y);
     [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
 }
+
+//called when the card ends moving, user's finger lift up
 - (void)panEnded:(UIPanGestureRecognizer*)gestureRecognizer{
     if(newCard.center.x > self.Deck.center.x + self.Deck.frame.size.width / 2 || newCard.center.x < self.Deck.center.x - self.Deck.frame.size.width / 2 || newCard.center.y > self.Deck.center.y + self.Deck.frame.size.height / 2 || newCard.center.y < self.Deck.center.y - self.Deck.frame.size.height / 2)
     {    //if the selected view is moved off the deck then go on;
@@ -280,20 +306,18 @@
     }
     
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 - (IBAction)startGame:(id)sender
 {
     if(!gamestart){
         [self gameinitialize];
         [self.game begin];
-        
-        AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
-        NSLog(@"In PokerViewController, nickName is %@ and ip address is %@", appDelegate.nickName, appDelegate.IPAddress);
-        
         //[UIView animateWithDuration:5 animations:^{
         //[_startButton setTitle:@"" forState:normal];
         //[_startButton setCenter:CGPointMake(162, 207)];

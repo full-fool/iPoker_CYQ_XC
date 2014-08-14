@@ -56,9 +56,9 @@
 
 - (void)switchToPokerViewWithGame:(PokerGame *)game
 {
-    PokerViewController *pokerView = [[PokerViewController alloc] init];
-    pokerView.game = game;
-    [self.navigationController pushViewController:pokerView animated:YES];
+    //PokerViewController *pokerView = [[PokerViewController alloc] init];
+    //pokerView.game = game;
+    //[self.navigationController pushViewController:pokerView animated:YES];
 }
 
 - (IBAction)createGame:(id)sender
@@ -68,16 +68,21 @@
     AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
     appDelegate.nickName = self.nickNameTextField.text;
     appDelegate.IPAddress = self.IPTextField.text;
+    appDelegate.isServer = YES;
     
-    PokerGame *game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
-    [self switchToPokerViewWithGame:game];
+    //PokerGame *game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
+    //[self switchToPokerViewWithGame:game];
 }
 
 
 - (IBAction)joinGame:(id)sender
 {
-    PokerGame *game = [[PokerGame alloc] initAsServer:NO toHost:self.IPTextField.text];
-    [self switchToPokerViewWithGame:game];
+    AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
+    appDelegate.nickName = self.nickNameTextField.text;
+    appDelegate.IPAddress = self.IPTextField.text;
+    appDelegate.isServer = NO;
+    //PokerGame *game = [[PokerGame alloc] initAsServer:NO toHost:self.IPTextField.text];
+    //[self switchToPokerViewWithGame:game];
 }
 
 - (BOOL) textFieldShouldReturn:(UITextField *)theTextField
@@ -93,12 +98,13 @@
     [super touchesBegan:touches withEvent:event];
 }
 
+//called when user touches the TextField
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    NSLog(@"hello");
     self.currentResponder = textField;
 }
 
+//called when user touches field in screen other than TextField
 - (void)resignOnTap:(id)iSender {
     [[self view] endEditing:YES];
     [self.currentResponder resignFirstResponder];
