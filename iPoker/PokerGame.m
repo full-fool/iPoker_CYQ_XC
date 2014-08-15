@@ -81,8 +81,6 @@
     self.decks = [[NSMutableDictionary alloc] init];
     self.eventQueue = [[NSMutableArray alloc] init];
     
-    
-    
     // Send a request to server to join the game
     AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
     [self joinGameWithName:appDelegate.nickName];
