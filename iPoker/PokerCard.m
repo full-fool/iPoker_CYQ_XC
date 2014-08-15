@@ -14,17 +14,17 @@
     self.faceUp = !self.faceUp;
 }
 
-// Compare one card with another, first compare suit, then compare rank
+// Compare one card with another, first compare rank, then compare suit
 - (NSComparisonResult)compare:(PokerCard *)otherCard
 {
-    if (self.suit == otherCard.suit) {
-        if (self.rank < otherCard.rank)
+    if (self.rank == otherCard.rank) {
+        if (self.suit < otherCard.suit)
             return NSOrderedAscending;
-        else if (self.rank == otherCard.rank)
+        else if (self.suit == otherCard.suit)
             return NSOrderedSame;
         else return NSOrderedDescending;
     } else {
-        if (self.suit < otherCard.suit)
+        if (self.rank < otherCard.rank)
             return NSOrderedAscending;
         else return NSOrderedDescending;
     }

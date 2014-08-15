@@ -45,6 +45,10 @@
 
     }
     gamestart = false;
+    self.passButton.enabled = FALSE;
+    self.sortButton.enabled = FALSE;
+    self.Deck.enabled = FALSE;
+    self.shuffleButon.enabled = FALSE;  //disable these buttons before the game;
 }
 
 //initializer of the UI, nothing to do with the model.
@@ -82,6 +86,14 @@
     
     //tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     //[tapGesture setNumberOfTapsRequired:1];
+}
+
+-(NSString*)findimagewithsuit:(NSInteger)suit withrank:(NSInteger)rank { //return image name according to suit and rank of the card;
+    NSString *suitName[4] = {@"diamonds_",@"hearts_",@"clubs_",@"spades_"};
+    NSString *rankName[16] = {@"",@"ace",@"two",@"three",@"four",@"five",@"six",@"seven",@"eight",@"nine",@"ten",@"jack",@"queen",@"king",@"joker_small",@"joker_big"};
+    if(rank < 14)
+        return [[NSString alloc] initWithFormat:@"%@%@",suitName[suit],rankName[rank]];
+    else return rankName[rank];
 }
 
 - (void)panDetected:(UIPanGestureRecognizer*)gestureRecognizer{
@@ -277,7 +289,10 @@
                 xLocation += self.Deck.frame.size.width / 3 * (HandCardNum - 1);
             [newCard setCenter:CGPointMake(xLocation, 420)];
             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:newCard cache:YES];
-            [newCard setImage:[UIImage imageNamed:@"diamonds_ace"]];
+            PokerDeck* deck  = [self.game.decks objectForKey:@"deck-0"];
+            PokerCard *card = [deck removeCardAtIndex:0];
+            [newCard setImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];//set background image for the card view;
+            [[self.game.decks objectForKey:@"deck-1"] insertCard:card atIndex:0];//insert into handdeck;
         } completion:^(BOOL finish){
             //[UIView beginAnimations:@"animation" context:nil];
             //[UIView setAnimationDuration:0.5];
@@ -288,13 +303,20 @@
             [[HandCards lastObject] removeGestureRecognizer:panGesture];
             [[HandCards lastObject] addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapupDetected:)]];
             [[HandCards lastObject] addGestureRecognizer:[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeupDetected:)]];
-            newCard= [[UIImageView alloc] initWithFrame:rect];
-            [viewCreated addObject: newCard];
-            [newCard setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
-            [newCard setImage:[UIImage imageNamed:@"cardback"]];
-            newCard.userInteractionEnabled = YES;
-            [self.view addSubview:newCard];
-            [newCard addGestureRecognizer:panGesture];
+           
+            if(![[self.game.decks objectForKey:@"deck-0"] isEmpty]){
+                newCard= [[UIImageView alloc] initWithFrame:rect];
+                [viewCreated addObject: newCard];
+                [newCard setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+                [newCard setImage:[UIImage imageNamed:@"cardback"]];
+                newCard.userInteractionEnabled = YES;
+                [self.view addSubview:newCard];
+                [newCard addGestureRecognizer:panGesture];
+            }
+            else{   //basedeck is empty,then hide the deck button;
+                self.Deck.enabled = false;
+                self.Deck.alpha = 0;
+            }
         }
          ];
     }
@@ -318,6 +340,12 @@
     if(!gamestart){
         [self gameinitialize];
         [self.game begin];
+        self.passButton.enabled = TRUE;
+        self.sortButton.enabled = TRUE;
+        self.Deck.enabled = TRUE;
+        self.shuffleButon.enabled = TRUE;
+        [self.game allocDeck];
+        [self.game allocDeck];  //deck-0:basedeck,deck-1:handdeck,deck-2:last-out deck,deck-3:total-out deck;
         //[UIView animateWithDuration:5 animations:^{
         //[_startButton setTitle:@"" forState:normal];
         //[_startButton setCenter:CGPointMake(162, 207)];
@@ -354,6 +382,10 @@
         [_startButton setTitle:@"开始游戏" forState:UIControlStateNormal];
         [_startButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         gamestart = false;
+        self.passButton.enabled = FALSE;
+        self.sortButton.enabled = FALSE;
+        self.Deck.enabled = FALSE;
+        self.shuffleButon.enabled = FALSE;
     }
 }
 
@@ -396,13 +428,18 @@
 - (IBAction)getNewCard:(id)sender {
     
 }
-- (IBAction)Sort:(id)sender {
-    //[self.game sort: self.d]
+- (IBAction)Sort:(id)sender {  //only sort handcards;
+    PokerDeck *deck =[self.game.decks objectForKey:@"deck-1"];
+    [deck sort];
+    for(NSInteger i = 0;i < HandCards.count;i ++){
+        [((UIImageView *)[HandCards objectAtIndex:i]) setImage:[UIImage imageNamed:[self findimagewithsuit:[deck getCardAtIndex:i].suit withrank:[deck getCardAtIndex:i].rank]]];
+    }
 }
 
 - (IBAction)PASS:(id)sender {
 }
 
 - (IBAction)shuffle:(id)sender {
+    [[self.game.decks objectForKey:@"deck-0"] shuffle];
 }
 @end

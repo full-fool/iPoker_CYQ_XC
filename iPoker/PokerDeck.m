@@ -38,8 +38,9 @@
 {
     [self.cards shuffle];
 }
-// Sort cards in a PRE-DEFINED order, spade < heart < club < diamond,
-// then A < 2 < 3 < ... < 10 < J < Q < K < JokerSmall < JokerBig.
+// Sort cards in a PRE-DEFINED order,
+// A < 2 < 3 < ... < 10 < J < Q < K < JokerSmall < JokerBig,
+// then spade < heart < club < diamond.
 // Will support palyer-defined order rule in the future.
 - (void)sort
 {
