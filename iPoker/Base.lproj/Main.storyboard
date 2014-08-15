@@ -33,7 +33,7 @@
                                 </state>
                                 <connections>
                                     <action selector="joinGame:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="txs-J4-WBh"/>
-                                    <segue destination="nuz-vy-WiH" kind="modal" id="XP9-zE-HrV"/>
+                                    <segue destination="nuz-vy-WiH" kind="modal" modalTransitionStyle="flipHorizontal" id="XP9-zE-HrV"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nQV-QC-982">
