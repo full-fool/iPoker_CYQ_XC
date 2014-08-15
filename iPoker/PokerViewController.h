@@ -17,6 +17,9 @@
 - (IBAction)getNewCard:(id)sender;
 
 @property (strong, nonatomic) IBOutlet UIButton *startButton;
+@property (strong, nonatomic) IBOutlet UIButton *passButton;
+@property (strong, nonatomic) IBOutlet UIButton *shuffleButon;
+@property (strong, nonatomic) IBOutlet UIButton *sortButton;
 @property (strong, nonatomic) IBOutlet UILabel *TotalCardsArea;
 @property (strong, nonatomic) IBOutlet UILabel *LastCardsArea;
 

@@ -251,6 +251,9 @@
                         <outlet property="DeskView" destination="CNM-JI-n9U" id="Hxq-EI-NM8"/>
                         <outlet property="LastCardsArea" destination="C8x-7A-EoA" id="rt5-gb-695"/>
                         <outlet property="TotalCardsArea" destination="rrj-y9-Z5a" id="0Ui-nd-T1y"/>
+                        <outlet property="passButton" destination="fHg-gf-mxW" id="cpw-j6-6V7"/>
+                        <outlet property="shuffleButon" destination="e8f-uv-5E7" id="dLS-vg-heg"/>
+                        <outlet property="sortButton" destination="z3T-b6-Ppq" id="urZ-Xd-Lkl"/>
                         <outlet property="startButton" destination="pa6-ij-TtT" id="5Qk-91-sgb"/>
                         <outlet property="startview" destination="63o-jN-CU0" id="WVK-b7-9ad"/>
                     </connections>
