@@ -292,6 +292,7 @@
             PokerDeck* deck  = [self.game.decks objectForKey:@"deck-0"];
             PokerCard *card = [deck removeCardAtIndex:0];
             [newCard setImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];//set background image for the card view;
+            [[self.game.decks objectForKey:@"deck-1"] insertCard:card atIndex:0];//insert into handdeck;
         } completion:^(BOOL finish){
             //[UIView beginAnimations:@"animation" context:nil];
             //[UIView setAnimationDuration:0.5];
@@ -427,8 +428,12 @@
 - (IBAction)getNewCard:(id)sender {
     
 }
-- (IBAction)Sort:(id)sender {
-    //[self.game sort: self.d]
+- (IBAction)Sort:(id)sender {  //only sort handcards;
+    PokerDeck *deck =[self.game.decks objectForKey:@"deck-1"];
+    [deck sort];
+    for(NSInteger i = 0;i < HandCards.count;i ++){
+        [((UIImageView *)[HandCards objectAtIndex:i]) setImage:[UIImage imageNamed:[self findimagewithsuit:[deck getCardAtIndex:i].suit withrank:[deck getCardAtIndex:i].rank]]];
+    }
 }
 
 - (IBAction)PASS:(id)sender {
