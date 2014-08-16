@@ -18,6 +18,7 @@
     BOOL gamestart;
     UIImageView *newCard;
     NSInteger HandCardNum;
+    NSInteger CardsNum;
     NSMutableArray *HandCards;
     NSMutableArray *SelectedHandCards;
     NSMutableArray *LastOutCards;
@@ -58,6 +59,7 @@
     self.startview.layer.zPosition = 9999;
     
     HandCardNum = 0;
+    CardsNum = 0;
     HandCards = [[NSMutableArray alloc] initWithObjects:newCard, nil];
     SelectedHandCards = [[NSMutableArray alloc] initWithObjects:newCard, nil];
     LastOutCards = [[NSMutableArray alloc] initWithObjects:newCard, nil];
@@ -71,7 +73,7 @@
     
     CGRect rect = CGRectMake(16,139,75,105);
     newCard= [[UIImageView alloc] initWithFrame:rect];
-    newCard.tag = 0;
+    newCard.tag = CardsNum ++;
     [viewCreated addObject: newCard];
     //emitterView = [[EmitterView alloc]initWithFrame:rect];
     //[newCard addSubview:emitterView];
@@ -96,7 +98,20 @@
         return [[NSString alloc] initWithFormat:@"%@%@",suitName[suit],rankName[rank]];
     else return rankName[rank];
 }
-
+-(void) sortcards:(NSMutableArray*)cards
+{
+    for(NSInteger i = 0;i < [cards count]; i ++)
+    {
+        for(NSInteger j = i + 1; j < [cards count]; j ++)
+        {
+            UIImageView *img1 = [cards objectAtIndex:i];
+            UIImageView *img2 = [cards objectAtIndex:j];
+            if(img1.tag > img2.tag)
+                [cards exchangeObjectAtIndex:i withObjectAtIndex:j];
+        }
+    }
+    return;
+}
 - (void)panDetected:(UIPanGestureRecognizer*)gestureRecognizer{
     switch ([gestureRecognizer state]) {
         case UIGestureRecognizerStateBegan:
@@ -135,12 +150,14 @@
     if(gestureRecognizer.direction == UISwipeGestureRecognizerDirectionUp || gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight){
         //only when swipe direction is up or right then go on;
         NSUInteger selectedNum = SelectedHandCards.count;
+        [self sortcards:SelectedHandCards];
         [UIView animateWithDuration:0.5 animations:^{
             if([LastOutCards count] != 0)
                 //move last-out cards to total-out cards;
             {
                 for(int i = 0;i < LastOutCards.count; ++ i)
                     [TotalOutCards addObject:[LastOutCards objectAtIndex:i]];
+                //[self sortcards:TotalOutCards];
                 if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (TotalOutCards.count - 1) <= [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x)
                 {
                     for(int i = 0;i < TotalOutCards.count; ++ i)
@@ -172,8 +189,8 @@
                 {
                     [[SelectedHandCards objectAtIndex:i] setCenter:CGPointMake(151.5 + distance * i, 191.5)];
                     [HandCards removeObject:[SelectedHandCards objectAtIndex:i]];
-                    if(i != 0)
-                        ((UIView *)[SelectedHandCards objectAtIndex:i]).layer.zPosition = ((UIView *)LastOutCards.lastObject).layer.zPosition + 1;
+                    //if(i != 0)
+                    //    ((UIView *)[SelectedHandCards objectAtIndex:i]).layer.zPosition = ((UIView *)LastOutCards.lastObject).layer.zPosition + 1;
                     [LastOutCards addObject:[SelectedHandCards objectAtIndex:i]];
                     HandCardNum --;
                 }
@@ -183,8 +200,8 @@
                 {
                     [[SelectedHandCards objectAtIndex:i] setCenter:CGPointMake(151.5 + self.Deck.frame.size.width / 3 * i, 191.5)];
                     [HandCards removeObject:[SelectedHandCards objectAtIndex:i]];
-                    if(i != 0)
-                        ((UIView *)[SelectedHandCards objectAtIndex:i]).layer.zPosition = ((UIView *)LastOutCards.lastObject).layer.zPosition + 1;
+                    //if(i != 0)
+                    //    ((UIView *)[SelectedHandCards objectAtIndex:i]).layer.zPosition = ((UIView *)LastOutCards.lastObject).layer.zPosition + 1;
                     [LastOutCards addObject:[SelectedHandCards objectAtIndex:i]];
                     HandCardNum --;
                 }
@@ -227,40 +244,19 @@
 - (void)swipedownDetected:(UISwipeGestureRecognizer*)gestureRecognizer{
     NSLog(@"swipe down detected!!");
     if(gestureRecognizer.direction == UISwipeGestureRecognizerDirectionDown || gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight){
+        for(UIImageView *view in LastOutCards)
+            [HandCards addObject:view];
+        [self sortcards:HandCards];
+        HandCardNum = [HandCards count];
         [UIView animateWithDuration:0.5 animations:^{
-            if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (HandCardNum - 1 + LastOutCards.count) > [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x)
-            {
-                NSUInteger distance = ([[UIScreen mainScreen] bounds].size.width - 2 * self.Deck.center.x) / (HandCardNum - 1+ LastOutCards.count);
-                for(int i = 0;i < HandCardNum; ++ i)
-                    [[HandCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + distance * i, 420)];
-                for(int i = 0; i < LastOutCards.count ;++ i)
-                {
-                    [[LastOutCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + distance * HandCardNum, 420)];
-                    //if(HandCardNum != 1 || i != 0)
-                    //    ((UIView *)[LastOutCards objectAtIndex:i]).layer.zPosition = ((UIView *)[HandCards lastObject]).layer.zPosition + 1;
-                    [HandCards addObject:[LastOutCards objectAtIndex:i]];
-                    HandCardNum ++ ;
-                    [[HandCards lastObject] removeGestureRecognizer:gestureRecognizer];
-                    [[HandCards lastObject] addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapupDetected:)]];
-                    [[HandCards lastObject] addGestureRecognizer:[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeupDetected:)]];
-                }
-            }
-            else{
-                for(int i = 0;i < HandCardNum; ++ i)
-                    [[HandCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + self.Deck.frame.size.width / 3 * i, 420)];
-                for(int i = 0; i < LastOutCards.count ;++ i)
-                {
-                    [[LastOutCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + self.Deck.frame.size.width / 3 * HandCardNum, 420)];
-                    //if(HandCardNum != 1 || i != 0)
-                    //    ((UIView *)[LastOutCards objectAtIndex:i]).layer.zPosition = ((UIView *)[HandCards lastObject]).layer.zPosition + 1;
-                    [HandCards addObject:[LastOutCards objectAtIndex:i]];
-                    HandCardNum ++ ;
-                    //NSLog(@"%f %f",((UIView *)[LastOutCards objectAtIndex:i]).layer.zPosition,((UIView *)[HandCards lastObject]).layer.zPosition);
-                }
-            }
+            NSUInteger distance = self.Deck.frame.size.width / 3;
+            if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (HandCardNum - 1) > [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x) //too many views so that reducing the distance between views of handcards is needed;
+                distance = ([[UIScreen mainScreen] bounds].size.width - 2 * self.Deck.center.x) / (HandCardNum - 1);
+            for(int i = 0;i < HandCardNum; ++ i)
+                [[HandCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + distance * i, 420)];
             for(int i = 0; i < HandCards.count; ++ i){
-                if(i > 0)
-                    ((UIView *)[HandCards objectAtIndex:i]).layer.zPosition = ((UIView *)[HandCards objectAtIndex:i - 1]).layer.zPosition + 1;
+                //if(i > 0)
+                //    ((UIView *)[HandCards objectAtIndex:i]).layer.zPosition = ((UIView *)[HandCards objectAtIndex:i - 1]).layer.zPosition + 1;
                 for(UIGestureRecognizer * tmp in [((UIView *)[HandCards objectAtIndex:i]) gestureRecognizers])
                     [((UIView *)[HandCards objectAtIndex:i]) removeGestureRecognizer:tmp];
                 [((UIView *)[HandCards objectAtIndex:i]) addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapupDetected:)]];
@@ -336,7 +332,7 @@
            
             if(![[self.game.decks objectForKey:@"deck-0"] isEmpty]){
                 newCard= [[UIImageView alloc] initWithFrame:rect];
-                newCard.tag = HandCardNum;
+                newCard.tag = CardsNum ++;
                 [viewCreated addObject: newCard];
                 [newCard setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
                 [newCard setImage:[UIImage imageNamed:@"cardback"]];

@@ -69,7 +69,17 @@
     appDelegate.nickName = self.nickNameTextField.text;
     appDelegate.IPAddress = self.IPTextField.text;
     appDelegate.isServer = YES;
-    
+    if(appDelegate.nickName == nil || [appDelegate.nickName  isEqual: @""])
+    {
+        NSLog(@"No NickName!");
+    }
+    else if(appDelegate.IPAddress == nil || [appDelegate.IPAddress  isEqual: @""])
+    {
+        NSLog(@"No IPAddress!");
+    }
+    else {
+        NSLog(@"%@ create game %@.",appDelegate.nickName,appDelegate.IPAddress);
+    }
     //PokerGame *game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
     //[self switchToPokerViewWithGame:game];
 }
@@ -85,9 +95,12 @@
     {
         NSLog(@"No NickName!");
     }
-    if(appDelegate.IPAddress == nil || [appDelegate.IPAddress  isEqual: @""])
+    else if(appDelegate.IPAddress == nil || [appDelegate.IPAddress  isEqual: @""])
     {
         NSLog(@"No IPAddress!");
+    }
+    else {
+        NSLog(@"%@ join game %@.",appDelegate.nickName,appDelegate.IPAddress);
     }
     //PokerGame *game = [[PokerGame alloc] initAsServer:NO toHost:self.IPTextField.text];
     //[self switchToPokerViewWithGame:game];
