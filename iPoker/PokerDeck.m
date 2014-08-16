@@ -82,6 +82,20 @@
     return card;
 }
 
+//remove a card at a given tag
+- (PokerCard *)removeCardAtTag:(NSInteger)tag
+{
+    for(NSInteger i = 0; i < [self.cards count]; i ++)
+    {
+        if(((PokerCard *)[self.cards objectAtIndex:i]).tag == tag)
+        {
+            return [self removeCardAtIndex:i];
+        }
+    }
+    NSLog(@"No card's tag is %d in %@\n",tag,self.ID);
+    return nil;
+}
+
 // Remove card, if no such card, do nothing. If remove successes, set card.deck
 // to nil.
 - (void)removeCard:(PokerCard *)card

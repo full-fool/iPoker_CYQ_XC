@@ -35,6 +35,7 @@
 
 /// Methods to act in a game
 - (void)moveCard:(PokerCard *)card toDeck:(PokerDeck *)deck atIndex:(NSInteger)index;
+- (void)moveCards:(NSMutableArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger)index;
 - (void)pass;
 - (void)begin;
 - (void)reset;

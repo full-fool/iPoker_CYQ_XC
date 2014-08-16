@@ -81,6 +81,14 @@
     appDelegate.nickName = self.nickNameTextField.text;
     appDelegate.IPAddress = self.IPTextField.text;
     appDelegate.isServer = NO;
+    if(appDelegate.nickName == nil || [appDelegate.nickName  isEqual: @""])
+    {
+        NSLog(@"No NickName!");
+    }
+    if(appDelegate.IPAddress == nil || [appDelegate.IPAddress  isEqual: @""])
+    {
+        NSLog(@"No IPAddress!");
+    }
     //PokerGame *game = [[PokerGame alloc] initAsServer:NO toHost:self.IPTextField.text];
     //[self switchToPokerViewWithGame:game];
 }

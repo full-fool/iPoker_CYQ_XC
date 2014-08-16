@@ -44,6 +44,8 @@ typedef enum {
 // Deck it belongs to, must not be NULL
 @property (nonatomic, weak) PokerDeck *deck;
 
+@property (nonatomic) NSInteger tag;
+
 - (void)flip;
 - (NSComparisonResult)compare:(PokerCard *)otherCard;
 - (NSString *)toJSONString;

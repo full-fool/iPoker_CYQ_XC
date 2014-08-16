@@ -99,9 +99,6 @@
                                 <state key="normal" backgroundImage="cardback">
                                     <color key="titleShadowColor" red="0.18431372939999999" green="0.94117653369999998" blue="0.13333334029999999" alpha="1" colorSpace="deviceRGB"/>
                                 </state>
-                                <connections>
-                                    <action selector="getNewCard:" destination="nuz-vy-WiH" eventType="touchUpInside" id="Ebj-5T-5Aa"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z3T-b6-Ppq">
                                 <rect key="frame" x="172" y="315" width="49" height="30"/>

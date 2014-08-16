@@ -71,6 +71,7 @@
     
     CGRect rect = CGRectMake(16,139,75,105);
     newCard= [[UIImageView alloc] initWithFrame:rect];
+    newCard.tag = 0;
     [viewCreated addObject: newCard];
     //emitterView = [[EmitterView alloc]initWithFrame:rect];
     //[newCard addSubview:emitterView];
@@ -140,7 +141,6 @@
             {
                 for(int i = 0;i < LastOutCards.count; ++ i)
                     [TotalOutCards addObject:[LastOutCards objectAtIndex:i]];
-                [LastOutCards removeAllObjects];
                 if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (TotalOutCards.count - 1) <= [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x)
                 {
                     for(int i = 0;i < TotalOutCards.count; ++ i)
@@ -154,6 +154,17 @@
                 for(int i = 1; i < TotalOutCards.count; ++ i){
                     ((UIView *)[TotalOutCards objectAtIndex:i]).layer.zPosition = ((UIView *)[TotalOutCards  objectAtIndex:i - 1]).layer.zPosition + 1;
                 }  //redefine the zPosition of these views;
+                
+                NSMutableArray *cards = [[NSMutableArray alloc] init];
+                PokerDeck *deck = [self.game.decks objectForKey:@"deck-2"];
+                for(NSInteger k = 0;k < [LastOutCards count];k ++)
+                {
+                    PokerCard *card = [deck removeCardAtTag:((UIImageView *)[LastOutCards objectAtIndex:k]).tag];
+                    [[self.game.decks objectForKey:@"deck-3"] insertCard:card atIndex:0];
+                    [cards addObject:card];
+                }
+                [self.game moveCards:cards toDeck:[self.game.decks objectForKey:@"deck-3"]atIndex:0];
+                [LastOutCards removeAllObjects];
             }
             if(114 + self.Deck.frame.size.width / 3 * (SelectedHandCards.count - 1) > 218){  //too many views so that reducing the distance between views of last-out cards is needed;
                 NSUInteger distance = (218 - 114)/(SelectedHandCards.count - 1); //calculate new distance;
@@ -188,6 +199,15 @@
                 for(int i = 0;i < HandCardNum; ++ i)
                     [[HandCards objectAtIndex:i] setCenter:CGPointMake(self.Deck.center.x + self.Deck.frame.size.width / 3 * i, 420)];
             }
+            NSMutableArray *cards = [[NSMutableArray alloc] init];
+            PokerDeck *deck = [self.game.decks objectForKey:@"deck-1"];
+            for(NSInteger k = 0;k < [SelectedHandCards count];k ++)
+            {
+                PokerCard *card = [deck removeCardAtTag:((UIImageView *)[SelectedHandCards objectAtIndex:k]).tag];
+                [[self.game.decks objectForKey:@"deck-2"] insertCard:card atIndex:0];
+                [cards addObject:card];
+            }
+            [self.game moveCards:cards toDeck:[self.game.decks objectForKey:@"deck-2"]atIndex:0];
         } completion:^(BOOL finish){
             if(finish == true){
                 for(int i = 0;i < LastOutCards.count; ++ i)
@@ -247,13 +267,21 @@
                 [((UIView *)[HandCards objectAtIndex:i]) addGestureRecognizer:[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeupDetected:)]];
                 //NSLog(@"%f",((UIView *)[HandCards objectAtIndex:i]).layer.zPosition);
             }
+            NSMutableArray *cards = [[NSMutableArray alloc] init];
+            PokerDeck *deck = [self.game.decks objectForKey:@"deck-2"];
+            for(NSInteger k = 0;k < [LastOutCards count];k ++)
+            {
+                PokerCard *card = [deck removeCardAtTag:((UIImageView *)[LastOutCards objectAtIndex:k]).tag];
+                [[self.game.decks objectForKey:@"deck-1"] insertCard:card atIndex:0];
+                [cards addObject:card];
+            }
+            [self.game moveCards:cards toDeck:[self.game.decks objectForKey:@"deck-1"]atIndex:0];
         } completion:^(BOOL finish){
             [LastOutCards removeAllObjects];
             [SelectedHandCards removeAllObjects];
         }
          ];
     }
-    
 }
 
 //called when the card starts moving
@@ -292,7 +320,9 @@
             PokerDeck* deck  = [self.game.decks objectForKey:@"deck-0"];
             PokerCard *card = [deck removeCardAtIndex:0];
             [newCard setImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];//set background image for the card view;
+            card.tag = newCard.tag;
             [[self.game.decks objectForKey:@"deck-1"] insertCard:card atIndex:0];//insert into handdeck;
+            [self.game moveCard:card toDeck:[self.game.decks objectForKey:@"deck-1"] atIndex:0];//send message to host;
         } completion:^(BOOL finish){
             //[UIView beginAnimations:@"animation" context:nil];
             //[UIView setAnimationDuration:0.5];
@@ -306,6 +336,7 @@
            
             if(![[self.game.decks objectForKey:@"deck-0"] isEmpty]){
                 newCard= [[UIImageView alloc] initWithFrame:rect];
+                newCard.tag = HandCardNum;
                 [viewCreated addObject: newCard];
                 [newCard setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
                 [newCard setImage:[UIImage imageNamed:@"cardback"]];
@@ -425,21 +456,22 @@
     }
 }
 
-- (IBAction)getNewCard:(id)sender {
-    
-}
 - (IBAction)Sort:(id)sender {  //only sort handcards;
     PokerDeck *deck =[self.game.decks objectForKey:@"deck-1"];
     [deck sort];
     for(NSInteger i = 0;i < HandCards.count;i ++){
         [((UIImageView *)[HandCards objectAtIndex:i]) setImage:[UIImage imageNamed:[self findimagewithsuit:[deck getCardAtIndex:i].suit withrank:[deck getCardAtIndex:i].rank]]];
     }
+    [self.game sort:deck];
 }
 
 - (IBAction)PASS:(id)sender {
+    [self.game pass];
 }
 
 - (IBAction)shuffle:(id)sender {
-    [[self.game.decks objectForKey:@"deck-0"] shuffle];
+    PokerDeck *deck = [self.game.decks objectForKey:@"deck-0"];
+    [deck shuffle];
+    [self.game shuffle:deck];
 }
 @end

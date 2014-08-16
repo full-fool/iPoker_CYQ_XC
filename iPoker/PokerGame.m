@@ -109,6 +109,7 @@
                     PokerCard *card = [self allocCard];
                     card.suit = suit;
                     card.rank = rank;
+                    card.tag = -1;
                     [self.baseDeck insertCard:card atIndex:-1];
                 }
             }
@@ -141,7 +142,24 @@
     
     [self.clientManager clientSend:msg];
 }
-
+/// Called when player moves cards, this will send a message to server
+- (void)moveCards:(NSMutableArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger)index
+{
+    NSMutableArray *jsoncards = [[NSMutableArray alloc]init];
+    for(PokerCard *card in cards)
+    {
+        [jsoncards addObject:[card toJSONString]];
+    }
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setValue:@"moveCards" forKey:@"action"];
+    [dict setValue:self.player.ID forKey:@"playerID"];
+    [dict setValue:jsoncards forKey:@"cards"];
+    [dict setValue:deck.ID forKey:@"deckID"];
+    [dict setValue:[NSNumber numberWithInteger:index] forKey:@"index"];
+    NSString *msg = [dict toJSONString];
+    
+    [self.clientManager clientSend:msg];
+}
 /// Called when player wants to pass
 - (void)pass
 {

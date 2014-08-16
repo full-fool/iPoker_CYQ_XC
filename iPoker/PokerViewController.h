@@ -14,7 +14,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *Deck;
 @property (strong, nonatomic) IBOutlet UIView *DeskView;
 @property (strong, nonatomic) PokerGame *game;
-- (IBAction)getNewCard:(id)sender;
 
 @property (strong, nonatomic) IBOutlet UIButton *startButton;
 @property (strong, nonatomic) IBOutlet UIButton *passButton;
