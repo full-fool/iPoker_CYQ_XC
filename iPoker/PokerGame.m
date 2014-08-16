@@ -4,6 +4,7 @@
 #import "NSDictionary+JSONCategories.h"
 #import "ServerManager.h"
 #import "ClientManager.h"
+#import "AppDelegate.h"
 
 @interface PokerGame()
 @property (strong, nonatomic) ClientManager *clientManager;
@@ -79,8 +80,12 @@
     self.players = [[NSMutableDictionary alloc] init];
     self.decks = [[NSMutableDictionary alloc] init];
     self.eventQueue = [[NSMutableArray alloc] init];
+    
     // Send a request to server to join the game
-    [self joinGameWithName:self.player.name];
+    AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
+    [self joinGameWithName:appDelegate.nickName];
+    
+    //[self joinGameWithName:self.player.name];
     //NSLog(@"in reset, the play name is %@", self.player.name);
     
     if (self.isServer) {
