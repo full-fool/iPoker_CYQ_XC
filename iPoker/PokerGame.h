@@ -21,7 +21,7 @@
 /// Is a server or client
 @property (nonatomic) BOOL isServer;
 /// Player who plays the game
-@property (nonatomic, weak) PokerPlayer *player;
+@property (nonatomic, strong) PokerPlayer *player;
 /// Events queue, every time a player action message is received, the action will be
 /// added in to this queue. This queue will be empty if no any events.
 @property (nonatomic, strong) NSMutableArray *eventQueue;

@@ -369,6 +369,7 @@
 {
     if(!gamestart){
         [self gameinitialize];
+       // NSLog(@"in startgamt, the players is %@", self.game.players['ID']);
         [self.game begin];
         self.passButton.enabled = TRUE;
         self.sortButton.enabled = TRUE;
@@ -423,12 +424,13 @@
 - (void)checkEvent
 {
     while(true){
-        /*
+        
     NSMutableArray *queue = self.game.eventQueue;
     NSString *event = nil;
     @synchronized(queue) {
         if ([queue count] == 0)
-            return;
+            continue;
+        NSLog(@"the queue is not empty, it has %lu events", (unsigned long)[queue count]);
         event = [queue firstObject];
         [queue removeObjectAtIndex:0];
     }
@@ -436,26 +438,29 @@
     NSString *action = [dict valueForKey:@"action"];
     NSString *playerID = [dict valueForKey:@"playerID"];
     PokerPlayer *player = [self.game getPlayerWithId:playerID];
-    
+    NSLog(@"in checkevent, the action is %@ and playerID is %@", action, playerID);
+      
     if ([action isEqualToString:@"moveCard"]) {
-        PokerCard *card = [self.game getCardWithId:[dict valueForKey:@"cardID"]];
-        PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
-        NSInteger index = [[dict valueForKey:@"index"] integerValue];
-        [self.game didPlayer:player moveCard:card toDeck:deck atIndex:index];
+        //PokerCard *card = [self.game getCardWithId:[dict valueForKey:@"cardID"]];
+        //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
+        //NSInteger index = [[dict valueForKey:@"index"] integerValue];
+        //[self.game didPlayer:player moveCard:card toDeck:deck atIndex:index];
     } else if ([action isEqualToString:@"init"]) {
-        [self.game didInitWithDictionary:dict];
+        //[self.game didInitWithDictionary:dict];
     } else if ([action isEqualToString:@"allocPID"]) {
         [self.game didAllocPID:event];
     } else if ([action isEqualToString:@"shuffle"]) {
-        PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
-        [self.game didPlayer:player shuffleDeck:deck];
+        //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
+        //[self.game didPlayer:player shuffleDeck:deck];
     } else if ([action isEqualToString:@"sort"]) {
-        PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
-        [self.game didPlayer:player sortDeck:deck];
+        //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
+        //[self.game didPlayer:player sortDeck:deck];
     } else {
-        @throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
-    }*/
-        NSLog(@"test");
+        //@throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
+    }
+       
+        
+       // NSLog(@"test");
     }
 }
 

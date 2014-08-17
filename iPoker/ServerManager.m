@@ -60,7 +60,7 @@
 /// Server sends data to a certain client
 - (void)serverSend:(NSString *)dataString toPlayer:(NSString *)playerID
 {
-    NSLog(@"Server is sending data to player %@...\n%@", playerID, dataString);
+    NSLog(@"Server is sending data to player %@...\n%@ the end", playerID, dataString);
     AsyncSocket *sock = [self.playerSocketHashtable valueForKey:playerID];
     NSString *outputDataString = [dataString stringByAppendingString:@"\r\n"];
     NSData *data = [outputDataString dataUsingEncoding: NSUTF8StringEncoding];
@@ -137,8 +137,8 @@
     // print in log
 	if(msg)
 	{
-        NSLog(@"%@", msg);
-        [sock writeData:data withTimeout:-1 tag:0];
+        NSLog(@"the read data is %@ the end", msg);
+        //[sock writeData:data withTimeout:-1 tag:0];
 	}
 	else
 	{
@@ -163,6 +163,7 @@
         [retDict setValue:name forKey:@"name"];
         [retDict setValue:clientPlayerID forKey:@"PID"];
         [self serverSend:[retDict toJSONString] toPlayer:clientPlayerID];
+        NSLog(@"in Servermanager, starts to alloc pid for %@, playerid is %@", name, player.ID);
         
     } else {
         // Join message did not imform server

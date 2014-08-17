@@ -46,7 +46,7 @@
 {
     NSLog(@"Client is sending data...");
     NSString *outputDataString = [dataString stringByAppendingString:@"\r\n"];
-    NSLog(@"%@", outputDataString);
+    NSLog(@"the sending data is %@ the end", outputDataString);
     NSData *data = [outputDataString dataUsingEncoding: NSUTF8StringEncoding];
     [clientSocket writeData:data withTimeout:-1 tag:0];
 }
@@ -93,7 +93,7 @@
     // print in log
 	if(msg)
 	{
-        NSLog(@"%@", msg);
+        NSLog(@"in client, the read data is %@ the end", msg);
 	}
 	else
 	{

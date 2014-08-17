@@ -51,7 +51,6 @@
                    *cards = [[NSMutableArray alloc] init],
                    *players = [[NSMutableArray alloc] init];
     
-    [dict setValue:self.baseDeck.ID forKey:@"baseDeck"];
     //NSLog(@"in begin, the baseDeck ID is %@", self.baseDeck.ID);
     for (PokerDeck *deck in [self.decks allValues]) {
         [decks addObject:[deck toJSONString]];
@@ -63,6 +62,7 @@
         [cards addObject:[card toJSONString]];
     }
     
+    [dict setValue:self.baseDeck.ID forKey:@"baseDeck"];
     [dict setValue:players forKey:@"players"];
     [dict setValue:decks forKey:@"decks"];
     [dict setValue:cards forKey:@"cards"];
@@ -70,6 +70,7 @@
     
     msg = [dict toJSONString];
     NSLog(@"Game:begin: \n%@", msg);
+//    NSLog(@"Game begin, players %@ the end", players[0]);
     [self.serverManager serverBroadcast:msg];
 }
 
@@ -80,14 +81,14 @@
     self.players = [[NSMutableDictionary alloc] init];
     self.decks = [[NSMutableDictionary alloc] init];
     self.eventQueue = [[NSMutableArray alloc] init];
-    
-    // Send a request to server to join the game
     AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
     [self joinGameWithName:appDelegate.nickName];
+    // Send a request to server to join the game
+   
     
     //[self joinGameWithName:self.player.name];
     //NSLog(@"in reset, the play name is %@", self.player.name);
-    
+    //only client needs to join game, server does not need to
     if (self.isServer) {
         // If is server, init a lot of thing.
         // If is client, much fewer thing will be initialized, even the player is not initialized.
@@ -127,6 +128,8 @@
         [self.baseDeck insertCard:joker2 atIndex:-1];
         NSLog(@"Base deck init");
     }
+
+    
 }
 
 /// Called when player moves card, this will send a message to server
@@ -134,6 +137,7 @@
 {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     [dict setValue:@"moveCard" forKey:@"action"];
+    NSLog(@"in moveCard to Deck, the playerID is %@", self.player.ID);
     [dict setValue:self.player.ID forKey:@"playerID"];
     [dict setValue:card.ID forKey:@"cardID"];
     [dict setValue:deck.ID forKey:@"deckID"];
@@ -150,6 +154,7 @@
     {
         [jsoncards addObject:[card toJSONString]];
     }
+    //NSLog(@"in movecards, the player ID is \n %@", self.player.ID);
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     [dict setValue:@"moveCards" forKey:@"action"];
     [dict setValue:self.player.ID forKey:@"playerID"];
@@ -157,6 +162,7 @@
     [dict setValue:deck.ID forKey:@"deckID"];
     [dict setValue:[NSNumber numberWithInteger:index] forKey:@"index"];
     NSString *msg = [dict toJSONString];
+//    NSLog(@"in move cards, the final message is :\n %@", msg);
     
     [self.clientManager clientSend:msg];
 }
@@ -219,8 +225,8 @@
     
     if ([action isEqualToString:@"moveCard"]) {
         // If moveCard is not valid
-        if (![self isValidMove:message])
-            return;
+        //if (![self isValidMove:message])
+        //    return;
     }
     [self.serverManager serverBroadcast:message];
 }
@@ -230,6 +236,7 @@
 - (void)didClientReceiveMessage:(NSString *)message
 {
     [[self eventQueue] addObject:message];
+    NSLog(@"in didclientreceivemessage, the message is %@, the end", message);
 }
 
 /// Alloc a player, give it an auto-inc ID
@@ -379,14 +386,18 @@
 /// When client received a message with action 'allocPID'
 /// Use PID and name to create a new player, notice that this player is not fully built,
 /// we need init message sent from server to complete this process.
+///*** note that client can only call it when the message is about itself
 - (void)didAllocPID:(NSString *)message
 {
     // Server cares nothing about intialization
-    if (self.isServer)
-        return;
+    //if (self.isServer)
+    //    return;
     NSDictionary *dict = [NSDictionary dictionaryWithString:message];
     NSString *name = [dict valueForKey:@"name"];
     NSString *PID = [dict valueForKey:@"PID"];
+    self.player = [[PokerPlayer alloc] init];
+    self.player.ID = PID;
+    NSLog(@"in didallocpid, the PID is %@", self.player.ID);
     
     PokerPlayer *player = [[PokerPlayer alloc] init];
     player.ID = PID;
