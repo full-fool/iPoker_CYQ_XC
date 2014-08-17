@@ -12,7 +12,7 @@
 //#import "EmitterView.h"
 
 @interface PokerViewController ()
-
+#define interval @"0.1"
 @end
 @implementation PokerViewController{
     BOOL gamestart;
@@ -50,6 +50,9 @@
     self.sortButton.enabled = FALSE;
     self.Deck.enabled = FALSE;
     self.shuffleButon.enabled = FALSE;  //disable these buttons before the game;
+    NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(checkEvent) object:interval];
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    [queue addOperation:operation];
 }
 
 //initializer of the UI, nothing to do with the model.
@@ -419,6 +422,8 @@
 /// Check event queue status
 - (void)checkEvent
 {
+    while(true){
+        /*
     NSMutableArray *queue = self.game.eventQueue;
     NSString *event = nil;
     @synchronized(queue) {
@@ -449,6 +454,8 @@
         [self.game didPlayer:player sortDeck:deck];
     } else {
         @throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
+    }*/
+        NSLog(@"test");
     }
 }
 
