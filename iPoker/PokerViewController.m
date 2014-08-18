@@ -417,7 +417,12 @@
         self.shuffleButon.enabled = FALSE;
     }
 }
-
+- (void)updateUI:(PokerPlayer *)player movecard:(PokerCard *)card toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
+    
+}
+- (void)updateUI:(PokerPlayer *)player movecards:(NSArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
+    
+}
 /// Check event queue status
 - (void)checkEvent
 {
@@ -439,11 +444,15 @@
     NSLog(@"in checkevent, the action is %@ and playerID is %@", action, playerID);
       
     if ([action isEqualToString:@"moveCard"]) {
+        [self updateUI:player movecard:[self.game getCardWithId:[dict valueForKey:@"cardID"]] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
         //PokerCard *card = [self.game getCardWithId:[dict valueForKey:@"cardID"]];
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //NSInteger index = [[dict valueForKey:@"index"] integerValue];
         //[self.game didPlayer:player moveCard:card toDeck:deck atIndex:index];
-    } else if ([action isEqualToString:@"init"]) {
+    }else if ([action isEqualToString:@"moveCards"]) {
+        [self updateUI:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
+    }
+    else if ([action isEqualToString:@"init"]) {
         //[self.game didInitWithDictionary:dict];
     } else if ([action isEqualToString:@"allocPID"]) {
         [self.game didAllocPID:event];

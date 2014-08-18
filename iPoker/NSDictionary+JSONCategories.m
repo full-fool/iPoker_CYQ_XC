@@ -13,7 +13,7 @@
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *result =
         [NSJSONSerialization JSONObjectWithData:data
-                                        options:kNilOptions error:&error];
+                                        options:NSJSONReadingMutableContainers error:&error];
     if (error != nil) return nil;
     return result;
 }
