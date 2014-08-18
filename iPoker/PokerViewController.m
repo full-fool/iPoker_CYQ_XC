@@ -158,22 +158,20 @@
             if([LastOutCards count] != 0)
                 //move last-out cards to total-out cards;
             {
+                for(NSInteger k = [TotalOutCards count] - 1;k >= 0; k --)
+                {
+                    [UIView animateWithDuration:0.4 animations:^{
+                        UIImageView *view = [TotalOutCards objectAtIndex:k];
+                        view.center = CGPointMake(self.Deck.center.x, 73);
+                        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:view cache:YES];
+                        [view setImage:[UIImage imageNamed:@"cardback"]];//set background image for the card view;
+                    }];
+                }
+                [TotalOutCards removeAllObjects];
                 for(int i = 0;i < LastOutCards.count; ++ i)
                     [TotalOutCards addObject:[LastOutCards objectAtIndex:i]];
-                //[self sortcards:TotalOutCards];
-                if(self.Deck.center.x + self.Deck.frame.size.width / 3 * (TotalOutCards.count - 1) <= [[UIScreen mainScreen] bounds].size.width - self.Deck.center.x)
-                {
-                    for(int i = 0;i < TotalOutCards.count; ++ i)
-                        ((UIView *)[TotalOutCards objectAtIndex:i]).center = CGPointMake(self.Deck.center.x + self.Deck.frame.size.width / 3 * i, 73);
-                }
-                else{
-                    NSInteger distance = ([[UIScreen mainScreen] bounds].size.width - 2 * self.Deck.center.x)/(TotalOutCards.count - 1);
-                    for(int i = 0;i < TotalOutCards.count; ++ i)
-                        ((UIView *)[TotalOutCards objectAtIndex:i]).center = CGPointMake(self.Deck.center.x + distance * i, 73);
-                }
-                for(int i = 1; i < TotalOutCards.count; ++ i){
-                    ((UIView *)[TotalOutCards objectAtIndex:i]).layer.zPosition = ((UIView *)[TotalOutCards  objectAtIndex:i - 1]).layer.zPosition + 1;
-                }  //redefine the zPosition of these views;
+                for(int i = 0;i < TotalOutCards.count; ++ i)
+                    ((UIView *)[TotalOutCards objectAtIndex:i]).center = CGPointMake(((UIView *)[TotalOutCards objectAtIndex:i]).center.x, 73);
                 
                 NSMutableArray *cards = [[NSMutableArray alloc] init];
                 PokerDeck *deck = [self.game.decks objectForKey:@"deck-2"];
