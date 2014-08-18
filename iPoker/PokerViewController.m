@@ -314,12 +314,14 @@
                 xLocation += self.Deck.frame.size.width / 3 * (HandCardNum - 1);
             [newCard setCenter:CGPointMake(xLocation, 420)];
             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:newCard cache:YES];
+            NSMutableArray *cards = [[NSMutableArray alloc] init];
             PokerDeck* deck  = [self.game.decks objectForKey:@"deck-0"];
             PokerCard *card = [deck removeCardAtIndex:0];
             [newCard setImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];//set background image for the card view;
             card.tag = newCard.tag;
             [[self.game.decks objectForKey:@"deck-1"] insertCard:card atIndex:0];//insert into handdeck;
-            [self.game moveCard:card toDeck:[self.game.decks objectForKey:@"deck-1"] atIndex:0];//send message to host;
+            [cards addObject:card];
+            [self.game moveCards:cards toDeck:[self.game.decks objectForKey:@"deck-1"] atIndex:0];//send message to host;
         } completion:^(BOOL finish){
             //[UIView beginAnimations:@"animation" context:nil];
             //[UIView setAnimationDuration:0.5];
@@ -417,17 +419,64 @@
         self.shuffleButon.enabled = FALSE;
     }
 }
-- (void)updateUI:(PokerPlayer *)player movecard:(PokerCard *)card toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
-    
+
+- (UIImageView *)GetViewWithTag:(NSInteger)tag in:(NSMutableArray *)cards{
+    for(UIImageView *view in cards)
+    {
+        if(view.tag == tag)
+            return view;
+        else continue;
+    }
+    return nil;
 }
-- (void)updateUI:(PokerPlayer *)player movecards:(NSArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
-    
+- (void)UpdateGame:(PokerPlayer *)player movecards:(NSArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
+    NSMutableArray *cardview = [[NSMutableArray alloc] init];
+    if([deck.ID  isEqual: @"deck-1"])
+    {
+        for(NSString *str in cards)
+        {
+            NSDictionary *dict = [NSDictionary dictionaryWithString:str];
+            NSString *cardID = [dict valueForKey:@"ID"];
+            PokerCard *card = [self.game getCardWithId:cardID];
+            PokerDeck *basedeck = [self.game.decks objectForKey:@"deck-0"];
+            PokerDeck *totaloutdeck = [self.game.decks objectForKey:@"deck-3"];
+            //[[self.game.decks objectForKey:@"deck-0"]];
+            if([cards count] == 1 &&[basedeck HaveCard:card])
+            {
+                [basedeck removeCard:card];
+                return;
+            }
+            else if([totaloutdeck HaveCard:card])
+            {
+                
+            }
+        }
+    }
+    else if([deck.ID  isEqual: @"deck-2"])
+    {
+        for(NSString *str in cards)
+        {
+            NSDictionary *dict = [NSDictionary dictionaryWithString:str];
+            NSString *cardID = [dict valueForKey:@"ID"];
+            PokerCard *card = [self.game getCardWithId:cardID];
+            //[cardview addObject:[self GetViewWithTag:card.tag in:HandCards]];
+        }
+    }
+    else if([deck.ID  isEqual: @"deck-3"])
+    {
+        for(NSString *str in cards)
+        {
+            NSDictionary *dict = [NSDictionary dictionaryWithString:str];
+            NSString *cardID = [dict valueForKey:@"ID"];
+            PokerCard *card = [self.game getCardWithId:cardID];
+            //[cardview addObject:[self GetViewWithTag:card.tag in:LastOutCards]];
+        }
+    }
 }
 /// Check event queue status
 - (void)checkEvent
 {
     while(true){
-        
     NSMutableArray *queue = self.game.eventQueue;
     NSString *event = nil;
     @synchronized(queue) {
@@ -442,15 +491,10 @@
     NSString *playerID = [dict valueForKey:@"playerID"];
     PokerPlayer *player = [self.game getPlayerWithId:playerID];
     NSLog(@"in checkevent, the action is %@ and playerID is %@", action, playerID);
-      
-    if ([action isEqualToString:@"moveCard"]) {
-        [self updateUI:player movecard:[self.game getCardWithId:[dict valueForKey:@"cardID"]] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
-        //PokerCard *card = [self.game getCardWithId:[dict valueForKey:@"cardID"]];
-        //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
-        //NSInteger index = [[dict valueForKey:@"index"] integerValue];
-        //[self.game didPlayer:player moveCard:card toDeck:deck atIndex:index];
-    }else if ([action isEqualToString:@"moveCards"]) {
-        [self updateUI:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
+    //if(self.game.player.ID == playerID)
+    //    continue;
+    if ([action isEqualToString:@"moveCards"]) {
+        [self UpdateGame:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
     }
     else if ([action isEqualToString:@"init"]) {
         //[self.game didInitWithDictionary:dict];

@@ -114,6 +114,17 @@
     return [dict toJSONString];
 }
 
+//check if the card is in this deck
+- (BOOL)HaveCard:(PokerCard *)card
+{
+    for(PokerCard *cardtmp in [self cards])
+    {
+        if(cardtmp.ID == card.ID)
+            return true;
+    }
+    return false;
+}
+
 /// Return YES if there is no card in the deck
 - (BOOL)isEmpty
 {
@@ -121,3 +132,4 @@
 }
 
 @end
+

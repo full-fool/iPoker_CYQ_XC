@@ -23,4 +23,5 @@
 - (NSString *)toJSONString;
 - (BOOL)isEmpty;
 - (PokerCard *)removeCardAtTag:(NSInteger)tag;
+- (BOOL)HaveCard:(PokerCard *)card;
 @end
