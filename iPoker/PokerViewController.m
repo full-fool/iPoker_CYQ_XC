@@ -369,7 +369,6 @@
 {
     if(!gamestart){
         [self gameinitialize];
-       // NSLog(@"in startgamt, the players is %@", self.game.players['ID']);
         [self.game begin];
         self.passButton.enabled = TRUE;
         self.sortButton.enabled = TRUE;
@@ -525,8 +524,8 @@
         [self UpdateGame:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
     }
     else if ([action isEqualToString:@"init"]) {
-
-        [self startGame:nil];
+        if(!self.game.isServer)
+            [self startGame:nil];
         //[self.game didInitWithDictionary:dict];
     } else if ([action isEqualToString:@"allocPID"]) {
         //NSLog(@"in checkevent, the action is exactly allocPID")
