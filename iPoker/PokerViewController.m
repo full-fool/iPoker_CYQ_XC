@@ -480,8 +480,13 @@
             NSDictionary *dict = [NSDictionary dictionaryWithString:str];
             NSString *cardID = [dict valueForKey:@"ID"];
             PokerCard *card = [self.game getCardWithId:cardID];
-            UIImageView *newview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];
+            CGRect rect = CGRectMake(16,139,75,105);
+            UIImageView *newview = [[UIImageView alloc] initWithFrame:rect];
+            [newview setImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];
+            [newview setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
             [TotalOutCards addObject:newview];
+            [viewCreated addObject:newview];
+            [self.view addSubview:newview];
         }//create these cards' views and add them to totaloutcards;
         if(114 + self.Deck.frame.size.width / 3 * (TotalOutCards.count - 1) > 218){  //too many views so that reducing the distance between views of last-out cards is needed;
             NSUInteger distance = (218 - 114)/(TotalOutCards.count - 1); //calculate new distance;
