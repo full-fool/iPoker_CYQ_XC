@@ -534,29 +534,39 @@
     }
     else if ([action isEqualToString:@"init"]) {
         if(!self.game.isServer)
+        {
             [self Begin];
-        //[self.game didInitWithDictionary:dict];
-    } else if ([action isEqualToString:@"allocPID"]) {
+            [self.game didInitWithDictionary:dict];
+
+        }
+        else
+        {
+            NSLog(@"it is the server, do not need to init ");
+        }
+    }
+    else if ([action isEqualToString:@"allocPID"]) {
         //NSLog(@"in checkevent, the action is exactly allocPID")
         [self.game didAllocPID:event];
-    } else if ([action isEqualToString:@"shuffle"]) {
+    }
+    else if ([action isEqualToString:@"shuffle"]) {
         [self.game shuffle:[self.game.decks objectForKey:@"deck-0"]];
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //[self.game didPlayer:player shuffleDeck:deck];
-    } else if ([action isEqualToString:@"sort"]) {
+    }
+    else if ([action isEqualToString:@"sort"]) {
         return;
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //[self.game didPlayer:player sortDeck:deck];
-    }else if ([action isEqualToString:@"pass"]) {
+    }
+    else if ([action isEqualToString:@"pass"]) {
         return;
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //[self.game didPlayer:player sortDeck:deck];
     }
     else {
-        //@throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
+        @throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
     }
         
-       // NSLog(@"test");
     }
 }
 
