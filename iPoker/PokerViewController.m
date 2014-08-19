@@ -430,48 +430,71 @@
     return nil;
 }
 - (void)UpdateGame:(PokerPlayer *)player movecards:(NSArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
-    NSMutableArray *cardview = [[NSMutableArray alloc] init];
+    PokerDeck *basedeck = [self.game.decks objectForKey:@"deck-0"];
+    PokerDeck *totaloutdeck = [self.game.decks objectForKey:@"deck-3"];
     if([deck.ID  isEqual: @"deck-1"])
     {
-        for(NSString *str in cards)
+        if([cards count] == 1)
         {
-            NSDictionary *dict = [NSDictionary dictionaryWithString:str];
+            NSDictionary *dict = [NSDictionary dictionaryWithString:[cards objectAtIndex:0]];
             NSString *cardID = [dict valueForKey:@"ID"];
             PokerCard *card = [self.game getCardWithId:cardID];
-            PokerDeck *basedeck = [self.game.decks objectForKey:@"deck-0"];
-            PokerDeck *totaloutdeck = [self.game.decks objectForKey:@"deck-3"];
-            //[[self.game.decks objectForKey:@"deck-0"]];
-            if([cards count] == 1 &&[basedeck HaveCard:card])
-            {
-                [basedeck removeCard:card];
-                return;
-            }
+            if([basedeck HaveCard:card])
+              [basedeck removeCard:card];//If someone get a card from basedeck,remove it from model;
             else if([totaloutdeck HaveCard:card])
             {
-                
+                for(UIImageView * view in TotalOutCards)
+                {
+                    [view removeFromSuperview];
+                    [totaloutdeck removeCardAtTag:view.tag];
+                }
+                [TotalOutCards removeAllObjects];
             }
+            else
+                NSLog(@"No card for id %@!",card.ID);
+        }
+        else
+        {
+            for(UIImageView * view in TotalOutCards)
+            {
+                [view removeFromSuperview];
+                [totaloutdeck removeCardAtTag:view.tag];
+            }
+            [TotalOutCards removeAllObjects];//If some one get back its lastoutcards,remove them from totaloutcards;
         }
     }
-    else if([deck.ID  isEqual: @"deck-2"])
+    else if([deck.ID  isEqual: @"deck-2"])//some one plays some cards
     {
+        for(NSInteger k = [TotalOutCards count] - 1;k >= 0; k --)
+        {
+            [UIView animateWithDuration:0.4 animations:^{
+                UIImageView *view = [TotalOutCards objectAtIndex:k];
+                view.center = CGPointMake(self.Deck.center.x, 73);
+                [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:view cache:YES];
+                [view setImage:[UIImage imageNamed:@"cardback"]];//set background image for the card view;
+            }];
+        }
+        [TotalOutCards removeAllObjects];//first,move totaloutcards to discard deck;
         for(NSString *str in cards)
         {
             NSDictionary *dict = [NSDictionary dictionaryWithString:str];
             NSString *cardID = [dict valueForKey:@"ID"];
             PokerCard *card = [self.game getCardWithId:cardID];
-            //[cardview addObject:[self GetViewWithTag:card.tag in:HandCards]];
+            UIImageView *newview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self findimagewithsuit:card.suit withrank:card.rank]]];
+            [TotalOutCards addObject:newview];
+        }//create these cards' views and add them to totaloutcards;
+        if(114 + self.Deck.frame.size.width / 3 * (TotalOutCards.count - 1) > 218){  //too many views so that reducing the distance between views of last-out cards is needed;
+            NSUInteger distance = (218 - 114)/(TotalOutCards.count - 1); //calculate new distance;
+            for(int i = 0;i < TotalOutCards.count; ++ i)
+                [[TotalOutCards objectAtIndex:i] setCenter:CGPointMake(151.5 + distance * i, 73)];
         }
+        else{  //few views added,just put them to the end;
+            for(int i = 0;i < TotalOutCards.count; ++ i)
+                [[SelectedHandCards objectAtIndex:i] setCenter:CGPointMake(151.5 + self.Deck.frame.size.width / 3 * i, 73)];
+        }//arrange new views in totaloutcards;
     }
     else if([deck.ID  isEqual: @"deck-3"])
-    {
-        for(NSString *str in cards)
-        {
-            NSDictionary *dict = [NSDictionary dictionaryWithString:str];
-            NSString *cardID = [dict valueForKey:@"ID"];
-            PokerCard *card = [self.game getCardWithId:cardID];
-            //[cardview addObject:[self GetViewWithTag:card.tag in:LastOutCards]];
-        }
-    }
+        return;//nothing to do
 }
 /// Check event queue status
 - (void)checkEvent
