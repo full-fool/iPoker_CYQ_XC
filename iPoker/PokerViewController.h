@@ -1,10 +1,4 @@
-//
 //  PokerViewController.h
-//  iPoker
-//
-//  Created by Chaos on 14-8-14.
-//  Copyright (c) 2014年 pku. All rights reserved.
-//
 
 #import <UIKit/UIKit.h>
 #import "PokerGame.h"
@@ -25,7 +19,7 @@
 - (IBAction)Sort:(id)sender;
 - (IBAction)PASS:(id)sender;
 - (IBAction)shuffle:(id)sender;
-- (IBAction)checkEvent:(id)sender;
+
 
 
 @end

@@ -1,10 +1,5 @@
-//
 //  ViewController.m
-//  iPoker
-//
-//  Created by 崔 逸卿 on 14-8-13.
-//  Copyright (c) 2014年 pku. All rights reserved.
-//
+
 
 #import "ViewController.h"
 #import "PokerViewController.h"
@@ -25,7 +20,6 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
     }
     return self;
 }
@@ -34,6 +28,7 @@
 {
     [super viewDidLoad];
     [[UITextField appearance] setTintColor:[UIColor blueColor]];
+    
     // Do any additional setup after loading the view.
     UIImage*img =[UIImage imageNamed:@"background.jpg"];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:img]];
@@ -51,16 +46,9 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-- (void)switchToPokerViewWithGame:(PokerGame *)game
-{
-    //PokerViewController *pokerView = [[PokerViewController alloc] init];
-    //pokerView.game = game;
-    //[self.navigationController pushViewController:pokerView animated:YES];
-}
-
+///called when the user of server device touches the "创建游戏" button
 - (IBAction)createGame:(id)sender
 {
     NSLog(@"%@", self.nickNameTextField.text);
@@ -80,11 +68,11 @@
     else {
         NSLog(@"%@ create game %@.",appDelegate.nickName,appDelegate.IPAddress);
     }
-    //PokerGame *game = [[PokerGame alloc] initAsServer:YES toHost:@"localhost"];
-    //[self switchToPokerViewWithGame:game];
+
 }
 
 
+///called when the user of client device touches the "加入游戏" button
 - (IBAction)joinGame:(id)sender
 {
     AppDelegate *appDelegate=[[UIApplication sharedApplication] delegate];
@@ -102,10 +90,9 @@
     else {
         NSLog(@"%@ join game %@.",appDelegate.nickName,appDelegate.IPAddress);
     }
-    //PokerGame *game = [[PokerGame alloc] initAsServer:NO toHost:self.IPTextField.text];
-    //[self switchToPokerViewWithGame:game];
 }
 
+///called before the textField return
 - (BOOL) textFieldShouldReturn:(UITextField *)theTextField
 {
     if(theTextField == self.IPTextField || self.nickNameTextField){
@@ -114,18 +101,19 @@
     return YES;
 }
 
+///called when touch begins
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
 }
 
-//called when user touches the TextField
+///called when user touches the TextField
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     self.currentResponder = textField;
 }
 
-//called when user touches field in screen other than TextField
+///called when user touches field in screen other than TextField
 - (void)resignOnTap:(id)iSender {
     [[self view] endEditing:YES];
     [self.currentResponder resignFirstResponder];
