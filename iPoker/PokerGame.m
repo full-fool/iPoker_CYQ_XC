@@ -397,12 +397,12 @@
     NSString *PID = [dict valueForKey:@"PID"];
     //self.player = [[PokerPlayer alloc] init];
     //self.player.ID = PID;
-    NSLog(@"in didallocpid, the PID is %@", self.player.ID);
     
     PokerPlayer *player = [[PokerPlayer alloc] init];
     player.ID = PID;
     player.name = name;
     self.player = player;
+    NSLog(@"in didallocpid, the PID is %@", self.player.ID);
     [self.players setValue:player forKey:player.ID];
 }
 
