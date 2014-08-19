@@ -514,22 +514,30 @@
     NSString *playerID = [dict valueForKey:@"playerID"];
     PokerPlayer *player = [self.game getPlayerWithId:playerID];
     NSLog(@"in checkevent, the action is %@ and playerID is %@", action, playerID);
-    //if(self.game.player.ID == playerID)
-    //    continue;
+    if(self.game.player.ID == playerID)
+        continue;
     if ([action isEqualToString:@"moveCards"]) {
         [self UpdateGame:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
     }
     else if ([action isEqualToString:@"init"]) {
+        [self startGame:nil];
         //[self.game didInitWithDictionary:dict];
     } else if ([action isEqualToString:@"allocPID"]) {
         [self.game didAllocPID:event];
     } else if ([action isEqualToString:@"shuffle"]) {
+        [self.game shuffle:[self.game.decks objectForKey:@"deck-0"]];
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //[self.game didPlayer:player shuffleDeck:deck];
     } else if ([action isEqualToString:@"sort"]) {
+        return;
         //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
         //[self.game didPlayer:player sortDeck:deck];
-    } else {
+    }else if ([action isEqualToString:@"pass"]) {
+        return;
+        //PokerDeck *deck = [self.game getDeckWithId:[dict valueForKey:@"deckID"]];
+        //[self.game didPlayer:player sortDeck:deck];
+    }
+    else {
         //@throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
     }
        
