@@ -25,6 +25,7 @@
 - (IBAction)Sort:(id)sender;
 - (IBAction)PASS:(id)sender;
 - (IBAction)shuffle:(id)sender;
+- (IBAction)checkEvent:(id)sender;
 
 
 @end

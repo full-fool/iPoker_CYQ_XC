@@ -50,13 +50,16 @@
     self.sortButton.enabled = FALSE;
     self.Deck.enabled = FALSE;
     self.shuffleButon.enabled = FALSE;  //disable these buttons before the game;
+    /*
     NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(checkEvent) object:interval];
     NSOperationQueue *queue = [[NSOperationQueue alloc]init];
     [queue addOperation:operation];
+     */
 }
 
 //initializer of the UI, nothing to do with the model.
 -(void)gameinitialize{
+    NSLog(@"in gameinitialize");
     self.startview.alpha = 0.0;  //hide the startview before the game;
     self.startview.image = [UIImage imageNamed:@"gamestart.png"];
     self.startview.layer.zPosition = 9999;
@@ -73,6 +76,8 @@
     [LastOutCards removeAllObjects];
     [TotalOutCards removeAllObjects];
     [viewCreated removeAllObjects];   //just initialize these arrays;
+    NSLog(@"in gameinitialize, reach 1");
+
     
     CGRect rect = CGRectMake(16,139,75,105);
     newCard= [[UIImageView alloc] initWithFrame:rect];
@@ -89,6 +94,8 @@
     [panGesture setMinimumNumberOfTouches:1];
     panGesture.delaysTouchesEnded = NO;
     [newCard addGestureRecognizer:panGesture];   //initialize the first view in deck and add pangesture;
+    NSLog(@"in gameinitialize, reach 2");
+
     
     //tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     //[tapGesture setNumberOfTapsRequired:1];
@@ -367,25 +374,29 @@
 
 -(void)Begin{
     if(!gamestart){
+        [self.game allocDeck];
+        [self.game allocDeck];  //deck-0:basedeck,deck-1:handdeck,deck-2:last-out deck,deck-3:total-out deck;
+        NSLog(@"in begin function, !gamestart starts to initialize the UI");
         [self gameinitialize];
         self.passButton.enabled = TRUE;
         self.sortButton.enabled = TRUE;
         self.Deck.enabled = TRUE;
         self.shuffleButon.enabled = TRUE;
-        //[UIView animateWithDuration:5 animations:^{
-        //[_startButton setTitle:@"" forState:normal];
-        //[_startButton setCenter:CGPointMake(162, 207)];
-        //self.startview.alpha = 1.0;
-        //[_startButton setBackgroundImage:[UIImage imageNamed:@"gamestart.png"]forState:normal];
-        //} completion:nil];
-        
+        NSLog(@"in begin,reach here");
+
         [UIView animateWithDuration:0.5 animations:^{   //display the startview;
+            NSLog(@"in begin,reach here 1");
             self.startview.alpha = 1.0;
         } completion:^(BOOL finish){
+            NSLog(@"in begin,reach here 2");
+
             [UIView animateWithDuration:1.0 animations:^{
+                NSLog(@"in begin,reach here 3");
+
                 self.startview.alpha = 0.0;
             } completion:^(BOOL finish){
                 //[_startButton setEnabled:false];
+                NSLog(@"in begin, set 下一句按钮");
                 [_startButton setTitle:@"下一局" forState:UIControlStateNormal];
                 [_startButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                 gamestart = true;  //change start button
@@ -397,6 +408,7 @@
         }];
     }
     else {
+        NSLog(@"in begin function, gamestart starts to initialize the UI");
         self.Deck.alpha = 1.0;
         for(NSUInteger i = 0; i < [viewCreated count]; ++ i)
             [[viewCreated objectAtIndex:i] removeFromSuperview];
@@ -404,6 +416,8 @@
         [SelectedHandCards removeAllObjects];
         [viewCreated removeAllObjects];
         [LastOutCards removeAllObjects];
+        NSLog(@"in begin function, 设置开始游戏");
+
         [_startButton setTitle:@"开始游戏" forState:UIControlStateNormal];
         [_startButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         gamestart = false;
@@ -419,8 +433,7 @@
 {
     if(!gamestart){
         [self.game begin];
-        [self.game allocDeck];
-        [self.game allocDeck];  //deck-0:basedeck,deck-1:handdeck,deck-2:last-out deck,deck-3:total-out deck;
+        
     }
     else {
         [self.game reset];
@@ -440,6 +453,17 @@
 - (void)UpdateGame:(PokerPlayer *)player movecards:(NSArray *)cards toDeck:(PokerDeck *)deck atIndex:(NSInteger) index{
     PokerDeck *basedeck = [self.game.decks objectForKey:@"deck-0"];
     PokerDeck *totaloutdeck = [self.game.decks objectForKey:@"deck-3"];
+    if(self.game == NULL)
+    {
+        NSLog(@"Game is null");
+        return;
+    }
+    
+    if(basedeck == NULL || totaloutdeck == NULL)
+    {
+        NSLog(@"no base deck or totaloutdeck");
+        return;
+    }
     if([deck.ID  isEqual: @"deck-1"])
     {
         if([cards count] == 1)
@@ -510,14 +534,15 @@
         return;//nothing to do
 }
 /// Check event queue status
-- (void)checkEvent
+//- (void)checkEvent
+- (IBAction)checkEvent:(id)sender;
 {
-    while(true){
+    //while(true){
     NSMutableArray *queue = self.game.eventQueue;
     NSString *event = nil;
     @synchronized(queue) {
         if ([queue count] == 0)
-            continue;
+            return;
         NSLog(@"the queue is not empty, it has %lu events", (unsigned long)[queue count]);
         event = [queue firstObject];
         [queue removeObjectAtIndex:0];
@@ -528,13 +553,14 @@
     PokerPlayer *player = [self.game getPlayerWithId:playerID];
     NSLog(@"in checkevent, the action is %@ and playerID is %@", action, playerID);
     if(self.game.player.ID == playerID && playerID != NULL)
-        continue;
+        return;
     if ([action isEqualToString:@"moveCards"]) {
         [self UpdateGame:player movecards:[dict valueForKey:@"cards"] toDeck:[self.game getDeckWithId:[dict valueForKey:@"deckID"]] atIndex:[[dict valueForKey:@"index"] intValue]];
     }
     else if ([action isEqualToString:@"init"]) {
         if(!self.game.isServer)
         {
+            NSLog(@"it's not a server, begin to invoke begin and didinitwithdictionary");
             [self Begin];
             [self.game didInitWithDictionary:dict];
 
@@ -567,7 +593,7 @@
         @throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
     }
         
-    }
+    //}
 }
 
 - (IBAction)Sort:(id)sender {  //only sort handcards;

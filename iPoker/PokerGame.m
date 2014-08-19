@@ -235,8 +235,8 @@
 /// at the same time), it will call this method to update the game status.
 - (void)didClientReceiveMessage:(NSString *)message
 {
-    [[self eventQueue] addObject:message];
     NSLog(@"in didclientreceivemessage, the message is %@, the end", message);
+    [[self eventQueue] addObject:message];
 }
 
 /// Alloc a player, give it an auto-inc ID
@@ -279,6 +279,7 @@
     // Server cares nothing about initialization
     if (!self.isServer)
     {
+        NSLog(@"in didinitwithdictionary");
 
         NSArray *decks = [entities valueForKey:@"decks"];
         NSArray *cards = [entities valueForKey:@"cards"];
