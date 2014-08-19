@@ -365,8 +365,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)startGame:(id)sender
-{
+-(void)Begin{
     if(!gamestart){
         [self gameinitialize];
         [self.game begin];
@@ -417,6 +416,12 @@
         self.Deck.enabled = FALSE;
         self.shuffleButon.enabled = FALSE;
     }
+
+}
+
+- (IBAction)startGame:(id)sender
+{
+    [self Begin];
 }
 
 - (UIImageView *)GetViewWithTag:(NSInteger)tag in:(NSMutableArray *)cards{
@@ -525,7 +530,7 @@
     }
     else if ([action isEqualToString:@"init"]) {
         if(!self.game.isServer)
-            [self startGame:nil];
+            [self Begin];
         //[self.game didInitWithDictionary:dict];
     } else if ([action isEqualToString:@"allocPID"]) {
         //NSLog(@"in checkevent, the action is exactly allocPID")
