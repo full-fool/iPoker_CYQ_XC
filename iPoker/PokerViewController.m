@@ -368,13 +368,10 @@
 -(void)Begin{
     if(!gamestart){
         [self gameinitialize];
-        [self.game begin];
         self.passButton.enabled = TRUE;
         self.sortButton.enabled = TRUE;
         self.Deck.enabled = TRUE;
         self.shuffleButon.enabled = TRUE;
-        [self.game allocDeck];
-        [self.game allocDeck];  //deck-0:basedeck,deck-1:handdeck,deck-2:last-out deck,deck-3:total-out deck;
         //[UIView animateWithDuration:5 animations:^{
         //[_startButton setTitle:@"" forState:normal];
         //[_startButton setCenter:CGPointMake(162, 207)];
@@ -400,7 +397,6 @@
         }];
     }
     else {
-        [self.game reset];
         self.Deck.alpha = 1.0;
         for(NSUInteger i = 0; i < [viewCreated count]; ++ i)
             [[viewCreated objectAtIndex:i] removeFromSuperview];
@@ -421,6 +417,14 @@
 
 - (IBAction)startGame:(id)sender
 {
+    if(!gamestart){
+        [self.game begin];
+        [self.game allocDeck];
+        [self.game allocDeck];  //deck-0:basedeck,deck-1:handdeck,deck-2:last-out deck,deck-3:total-out deck;
+    }
+    else {
+        [self.game reset];
+    }
     [self Begin];
 }
 
@@ -551,7 +555,6 @@
     else {
         //@throw [[NSException alloc] initWithName:@"NotValidAction" reason:nil userInfo:nil];
     }
-       
         
        // NSLog(@"test");
     }
