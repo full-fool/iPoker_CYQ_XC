@@ -628,7 +628,7 @@
         
     }
 }
-
+//called when the button “排序” is pressed
 - (IBAction)Sort:(id)sender {
     
     //only sort handcards;
@@ -639,11 +639,11 @@
     }
     [self.game sort:deck];
 }
-
+//called when the button “过” is pressed
 - (IBAction)PASS:(id)sender {
     [self.game pass];
 }
-
+//called when the button “洗牌” is pressed
 - (IBAction)shuffle:(id)sender {
     PokerDeck *deck = [self.game.decks objectForKey:@"deck-0"];
     [deck shuffle];
